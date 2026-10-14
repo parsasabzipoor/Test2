@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101225">
+<title>آزمون سبک بازی من</title>
+<style>
+:root {
+  --bg:#101225;
+  --panel:#191c35;
+  --panel2:#222643;
+  --text:#f5f5ff;
+  --muted:#b4bad4;
+  --purple:#a78bfa;
+  --cyan:#67e8f9;
+  --pink:#f9a8d4;
+  --green:#86efac;
+  --border:#353958;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:radial-gradient(ellipse at top,#25204c 0%,var(--bg) 60%);
+  color:var(--text);
+  font-family:Tahoma,Arial,sans-serif;
+  line-height:1.9;
+  min-height:100vh;
+}
+button,input { font:inherit; }
+button {
+  cursor:pointer;
+  border:0;
+  border-radius:12px;
+  padding:12px 18px;
+  font-weight:bold;
+  transition:transform .15s,opacity .15s;
+}
+button:hover { transform:translateY(-2px); }
+button:focus-visible,input:focus-visible {
+  outline:3px solid var(--cyan);
+  outline-offset:3px;
+}
+button:disabled { opacity:.4;cursor:not-allowed; }
+.primary {
+  background:linear-gradient(120deg,var(--purple),#818cf8);
+  color:#15132a;
+}
+.secondary {
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.container { width:min(900px,92%);margin:auto; }
+header { padding:32px 0 20px;text-align:center; }
+.logo { font-size:2.5rem; }
+h1 { font-size:clamp(1.8rem,5vw,2.7rem);margin:0; }
+.subtitle { color:var(--muted);margin:8px auto;max-width:600px; }
+.pills {
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+  margin-top:16px;
+}
+.pill {
+  background:#ffffff0b;border:1px solid var(--border);
+  padding:5px 12px;border-radius:30px;font-size:.8rem;
+}
+.panel {
+  background:linear-gradient(145deg,#1b1e39f5,#15182df5);
+  border:1px solid var(--border);
+  border-radius:22px;padding:clamp(16px,4vw,30px);
+  margin:18px 0;box-shadow:0 15px 45px #0002;
+}
+h2 { font-size:1.3rem;margin-top:0; }
+h3 { font-size:1.05rem; }
+.muted { color:var(--muted); }
+.progress-row {
+  display:flex;justify-content:space-between;gap:10px;
+  color:var(--muted);font-size:.9rem;
+}
+.progress {
+  height:8px;background:#30334f;border-radius:20px;
+  overflow:hidden;margin:10px 0 24px;
+}
+.progress div {
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  transition:width .25s;
+}
+.options { display:grid;gap:11px;margin:22px 0; }
+.option {
+  display:flex;gap:12px;align-items:center;text-align:right;
+  width:100%;background:#222642;color:var(--text);
+  border:1px solid #373c60;padding:14px;
+  font-weight:normal;
+}
+.option .letter {
+  flex:0 0 34px;height:34px;display:grid;place-items:center;
+  border-radius:10px;background:#a78bfa20;color:var(--purple);
+  font-weight:bold;
+}
+.option.selected {
+  border-color:var(--cyan);background:#164052;
+}
+.actions {
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;
+}
+.actions button { flex:1 1 140px; }
+.hidden { display:none!important; }
+.result-head { text-align:center; }
+.result-icon { font-size:3.3rem; }
+.result-name { color:var(--cyan);font-size:clamp(1.5rem,5vw,2rem); }
+.score-grid {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+.score-item {
+  background:#ffffff06;border:1px solid var(--border);
+  padding:13px;border-radius:15px;min-width:0;
+}
+.score-title { display:flex;justify-content:space-between;gap:8px; }
+.score-track { background:#30334f;height:10px;border-radius:20px;overflow:hidden;margin-top:8px; }
+.score-fill { height:100%;border-radius:20px; }
+.competition { background:#fb7185; }
+.teamwork { background:#67e8f9; }
+.collecting { background:#fbbf24; }
+.exploration { background:#a78bfa; }
+.chart-label { font-size:.8rem;color:var(--muted); }
+.tag {
+  display:inline-block;background:#67e8f920;border:1px solid #67e8f955;
+  color:var(--cyan);border-radius:30px;padding:5px 12px;font-size:.85rem;
+}
+.note { font-size:.85rem;color:var(--muted); }
+.field { display:grid;gap:7px;margin:15px 0; }
+input[type="text"] {
+  width:100%;padding:12px;background:#101225;color:white;
+  border:1px solid var(--border);border-radius:10px;
+}
+footer { text-align:center;padding:25px 0 40px;color:var(--muted);font-size:.8rem; }
+#compareOutput { margin-top:20px; }
+.compare-row {
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0;
+}
+.compare-box {
+  padding:12px;border-radius:12px;background:#ffffff08;
+  border:1px solid var(--border);min-width:0;
+}
+@media(max-width:520px) {
+  .score-grid { grid-template-columns:1fr; }
+  .panel { border-radius:16px; }
+  .actions button { flex-basis:100%; }
+  .compare-row { grid-template-columns:1fr 1fr; }
+}
+@media print {
+  body { background:white;color:#111; }
+  body * { visibility:hidden; }
+  #result,#result * { visibility:visible; }
+  #result {
+    position:absolute;top:0;right:0;width:100%;
+    background:white;color:#111;border:0;box-shadow:none;
+  }
+  #result .muted,#result .note { color:#444; }
+  #result .score-item { border:1px solid #aaa; }
+  #result .actions,#result .no-print { display:none!important; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="logo" aria-hidden="true">🎮</div>
+  <h1>آزمون سبک بازی من</h1>
+  <p class="subtitle">سبک بازی خودت را کشف کن؛ رقابت می‌کنی، تیم می‌سازی یا دنیاهای تازه را می‌گردی؟</p>
+  <div class="pills">
+    <span class="pill">۱۲ سؤال</span>
+    <span class="pill">۴ سبک بازی</span>
+    <span class="pill">بدون ثبت‌نام</span>
+  </div>
+</header>
+
+<main>
+<section id="intro" class="panel">
+  <h2>آماده‌ای سبک خودت را پیدا کنی؟ 🚀</h2>
+  <p class="muted">
+    در هر سؤال گزینه‌ای را انتخاب کن که بیشتر به سلیقه‌ات نزدیک است.
+    در پایان، امتیازها و نمودار چهار سبک را می‌بینی.
+  </p>
+  <p>هیچ پاسخ درست یا غلطی وجود ندارد؛ فقط سلیقه خودت مهم است.</p>
+  <button id="startBtn" class="primary">شروع آزمون ←</button>
+</section>
+
+<section id="quiz" class="panel hidden" aria-live="polite">
+  <div class="progress-row">
+    <span id="questionCount">سؤال ۱ از ۱۲</span>
+    <span id="answeredCount">۰ پاسخ ثبت شده</span>
+  </div>
+  <div class="progress" role="progressbar" aria-label="پیشرفت آزمون"
+       aria-valuemin="0" aria-valuemax="12" aria-valuenow="0">
+    <div id="progressBar"></div>
+  </div>
+  <h2 id="questionTitle"></h2>
+  <p id="questionHint" class="muted"></p>
+  <div id="options" class="options"></div>
+  <div class="actions">
+    <button id="prevBtn" class="secondary">→ سؤال قبلی</button>
+    <button id="nextBtn" class="primary" disabled>سؤال بعدی ←</button>
+  </div>
+</section>
+
+<section id="result" class="panel hidden">
+  <div class="result-head">
+    <div class="result-icon" id="resultIcon">🏆</div>
+    <span class="tag">نتیجه آزمون تو</span>
+    <h2 id="resultName" class="result-name"></h2>
+    <p id="resultDescription" class="muted"></p>
+    <p id="tieMessage" class="note"></p>
+  </div>
+
+  <hr style="border:0;border-top:1px solid var(--border);margin:24px 0">
+
+  <h2>📊 نمودار سبک‌های بازی</h2>
+  <p class="note">درصد هر سبک، سهم آن از مجموع امتیازهای کسب‌شده است.</p>
+  <div id="scoreGrid" class="score-grid"></div>
+
+  <div class="panel" style="padding:16px;margin-top:20px">
+    <h3>💡 پیشنهاد مخصوص تو</h3>
+    <p id="resultTip" class="muted"></p>
+  </div>
+
+  <div class="actions no-print">
+    <button id="saveABtn" class="secondary">ذخیره به‌عنوان نتیجه A</button>
+    <button id="saveBBtn" class="secondary">ذخیره به‌عنوان نتیجه B</button>
+    <button id="compareBtn" class="secondary">مقایسه دو نتیجه</button>
+  </div>
+  <p id="saveStatus" class="note" aria-live="polite"></p>
+
+  <div class="actions no-print">
+    <button id="printBtn" class="primary">چاپ / ذخیره PDF</button>
+    <button id="imageBtn" class="secondary">دانلود کارت تصویری SVG</button>
+    <button id="restartBtn" class="secondary">↻ شروع دوباره</button>
+  </div>
+  <p class="note">برای ذخیره PDF، در پنجره چاپ مرورگر گزینه «ذخیره به‌صورت PDF» را انتخاب کن. کارت تصویری به شکل SVG دانلود می‌شود و می‌توان آن را با مرورگر باز کرد.</p>
+</section>
+
+<section id="compare" class="panel hidden">
+  <h2>⚖️ مقایسه دو نتیجه</h2>
+  <p class="muted">نتیجه‌های A و B را بدون نام واقعی ذخیره کن و سبک‌ها را مقایسه کن.</p>
+  <div id="compareOutput"></div>
+  <div class="actions">
+    <button id="backResultBtn" class="secondary">بازگشت به نتیجه</button>
+  </div>
+</section>
+</main>
+
+<footer>
+  این آزمون فقط برای سرگرمی و شناخت سلیقه بازی طراحی شده است؛ نه سنجش علمی شخصیت.
+</footer>
+</div>
+
+<script>
+"use strict";
+
+const dimensions = [
+  {key:"competition", name:"رقابت", icon:"🏆", color:"#fb7185",
+   description:"دوست داری رکورد بزنی، مهارتت را بهتر کنی و برای بردن تلاش کنی.",
+   tip:"بازی‌هایی با مسابقه، رتبه‌بندی و چالش‌های مهارتی را امتحان کن."},
+  {key:"teamwork", name:"همکاری", icon:"🤝", color:"#67e8f9",
+   description:"از هماهنگی با دوستان، حمایت از هم‌تیمی‌ها و رسیدن به هدف گروهی لذت می‌بری.",
+   tip:"حالت‌های گروهی و بازی‌هایی با نقش‌های مکمل را تجربه کن."},
+  {key:"collecting", name:"جمع‌آوری", icon:"💎", color:"#fbbf24",
+   description:"پیدا کردن آیتم‌ها، باز کردن پاداش‌ها و کامل کردن مجموعه‌ها برایت جذاب است.",
+   tip:"دنبال مأموریت‌های پاداش‌دار، مجموعه‌ها و آیتم‌های مخفی باش."},
+  {key:"exploration", name:"اکتشاف و مأموریت", icon:"🧭", color:"#a78bfa",
+   description:"کشف مکان‌های تازه، حل مسئله و امتحان روش‌های متفاوت را دوست داری.",
+   tip:"بازی‌های جهان‌باز، معمایی و ماجراجویی را امتحان کن."}
+];
+
+// هر گزینه یک سبک اصلی (۲ امتیاز) و گاهی یک سبک فرعی (۱ امتیاز) دارد.
+const questions = [
+ {q:"وقتی وارد یک مسابقه می‌شوی، کدام بخش جذاب‌تر است؟",hint:"اولین چیزی را انتخاب کن که به ذهنت می‌رسد.",
+  a:[
+   ["از بقیه بهتر عمل کنم و نتیجه خوبی بگیرم.",{competition:2}],
+   ["با هم‌تیمی‌ها هماهنگ شوم.",{teamwork:2}],
+   ["آیتم‌ها و پاداش‌های بیشتری جمع کنم.",{collecting:2}],
+   ["مکان‌های تازه و مأموریت‌ها را کشف کنم.",{exploration:2}]
+  ]},
+ {q:"یک مرحله سخت پیش روی توست. چه کار می‌کنی؟",hint:"روش معمول خودت را در نظر بگیر.",
+  a:[
+   ["چند بار تلاش می‌کنم تا رکورد بهتری بزنم.",{competition:2}],
+   ["از دوستانم کمک می‌گیرم و با هم برنامه می‌ریزیم.",{teamwork:2}],
+   ["اول تجهیزات و منابع لازم را جمع می‌کنم.",{collecting:2}],
+   ["مسیرها و راه‌حل‌های متفاوت را امتحان می‌کنم.",{exploration:2}]
+  ]},
+ {q:"در یک بازی گروهی چه نقشی را ترجیح می‌دهی؟",
+  a:[
+   ["بازیکنی که برای بردن بیشترین تلاش را می‌کند.",{competition:2,teamwork:1}],
+   ["کسی که به دیگران کمک و گروه را هماهنگ می‌کند.",{teamwork:2}],
+   ["کسی که منابع و وسایل لازم را پیدا می‌کند.",{collecting:2,teamwork:1}],
+   ["کسی که مسیر تازه‌ای برای گروه پیدا می‌کند.",{exploration:2,teamwork:1}]
+  ]},
+ {q:"در پایان یک مرحله، کدام پاداش خوشحالت می‌کند؟",
+  a:[
+   ["رتبه بهتر یا ثبت یک رکورد جدید.",{competition:2}],
+   ["پیروزی مشترک با دوستان.",{teamwork:2}],
+   ["یک آیتم کمیاب یا تکمیل مجموعه.",{collecting:2}],
+   ["باز شدن منطقه یا مأموریت تازه.",{exploration:2}]
+  ]},
+ {q:"اگر نقشه بزرگی در اختیار داشته باشی، چه می‌کنی؟",
+  a:[
+   ["مسیر سریع برای رسیدن به هدف را پیدا می‌کنم.",{competition:2,exploration:1}],
+   ["با گروه تقسیم کار می‌کنم.",{teamwork:2}],
+   ["تمام علامت‌های مربوط به منابع و پاداش را بررسی می‌کنم.",{collecting:2}],
+   ["به نقاط ناشناخته سر می‌زنم.",{exploration:2}]
+  ]},
+ {q:"کدام چالش بیشتر هیجان‌زده‌ات می‌کند؟",
+  a:[
+   ["شکست دادن رقیبی قدرتمند.",{competition:2}],
+   ["نجات دادن گروه با همکاری.",{teamwork:2}],
+   ["پیدا کردن یک جایزه بسیار کمیاب.",{collecting:2}],
+   ["حل کردن یک معمای ناشناخته.",{exploration:2}]
+  ]},
+ {q:"وقتی بازی را دوباره اجرا می‌کنی، بیشتر دنبال چه هستی؟",
+  a:[
+   ["بهتر کردن نتیجه دفعه قبل.",{competition:2}],
+   ["بازی کردن با دوستان و هماهنگی بهتر.",{teamwork:2}],
+   ["پیدا کردن چیزهایی که جا مانده‌اند.",{collecting:2}],
+   ["امتحان کردن مسیر یا انتخابی تازه.",{exploration:2}]
+  ]},
+ {q:"اگر یک ابزار ویژه پیدا کنی، چه چیزی برایت مهم‌تر است؟",
+  a:[
+   ["اینکه کمک کند سریع‌تر و بهتر برنده شوم.",{competition:2}],
+   ["اینکه به کل گروه کمک کند.",{teamwork:2}],
+   ["اینکه کمیاب باشد و به مجموعه‌ام اضافه شود.",{collecting:2}],
+   ["اینکه راهی جدید برای پیشروی باز کند.",{exploration:2}]
+  ]},
+ {q:"در یک بازی بدون محدودیت زمانی چه می‌کنی؟",
+  a:[
+   ["برای تسلط بر مهارت‌ها تمرین می‌کنم.",{competition:2}],
+   ["با دیگران یک پروژه یا پایگاه مشترک می‌سازم.",{teamwork:2}],
+   ["منابع را جمع می‌کنم و همه چیز را مرتب می‌کنم.",{collecting:2}],
+   ["آزادانه محیط را می‌گردم و چیزهای جدید می‌آزمایم.",{exploration:2}]
+  ]},
+ {q:"وقتی یکی از هم‌تیمی‌ها اشتباه می‌کند، چه واکنشی داری؟",
+  a:[
+   ["روی بهتر کردن عملکرد دور بعد تمرکز می‌کنم.",{competition:2}],
+   ["کمکش می‌کنم و با هم راه‌حل پیدا می‌کنیم.",{teamwork:2}],
+   ["وسایل لازم را برای جبران اشتباه فراهم می‌کنم.",{collecting:2,teamwork:1}],
+   ["روش دیگری پیشنهاد می‌کنم تا از مشکل عبور کنیم.",{exploration:2,teamwork:1}]
+  ]},
+ {q:"کدام فعالیت فرعی را بیشتر دوست داری؟",
+  a:[
+   ["شرکت در مسابقه زمان یا امتیاز.",{competition:2}],
+   ["انجام یک مأموریت با دوستان.",{teamwork:2}],
+   ["تکمیل آلبوم، مجموعه یا فهرست آیتم‌ها.",{collecting:2}],
+   ["پیدا کردن راه مخفی و مکان ناشناخته.",{exploration:2}]
+  ]},
+ {q:"اگر بتوانی یک ویژگی به بازی اضافه کنی، کدام را انتخاب می‌کنی؟",
+  a:[
+   ["جدول رتبه‌بندی و چالش‌های جدید.",{competition:2}],
+   ["ابزارهای بهتر برای همکاری گروهی.",{teamwork:2}],
+   ["آیتم‌های کمیاب و مجموعه‌های بیشتر.",{collecting:2}],
+   ["نقشه‌های تازه و مأموریت‌های متفاوت.",{exploration:2}]
+  ]}
+];
+
+const $ = id => document.getElementById(id);
+const persianNumber = n => Number(n).toLocaleString("fa-IR");
+let answers = Array(questions.length).fill(null);
+let current = 0;
+let latest = null;
+let savedA = null;
+let savedB = null;
+
+function show(id) {
+  ["intro","quiz","result","compare"].forEach(x => $(x).classList.toggle("hidden",x!==id));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  $("questionCount").textContent = `سؤال ${persianNumber(current+1)} از ${persianNumber(questions.length)}`;
+  $("answeredCount").textContent = `${persianNumber(answers.filter(x=>x!==null).length)} پاسخ ثبت شده`;
+  $("progressBar").style.width = `${(current/questions.length)*100}%`;
+  $("quiz").querySelector(".progress").setAttribute("aria-valuenow",current);
+  $("questionTitle").textContent = q.q;
+  $("questionHint").textContent = q.hint || "گزینه‌ای را انتخاب کن که به سلیقه‌ات نزدیک‌تر است.";
+  $("options").replaceChildren();
+
+  q.a.forEach((option,index) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "option" + (answers[current]===index ? " selected" : "");
+    btn.setAttribute("aria-pressed",String(answers[current]===index));
+    const letter = document.createElement("span");
+    letter.className = "letter";
+    letter.textContent = ["الف","ب","ج","د"][index];
+    const label = document.createElement("span");
+    label.textContent = option[0];
+    btn.append(letter,label);
+    btn.addEventListener("click",() => {
+      answers[current] = index;
+      renderQuestion();
+    });
+    $("options").append(btn);
+  });
+
+  $("prevBtn").disabled = current===0;
+  $("nextBtn").disabled = answers[current]===null;
+  $("nextBtn").textContent = current===questions.length-1 ? "دیدن نتیجه 🎉" : "سؤال بعدی ←";
+  $("progressBar").style.width = `${((current+1)/questions.length)*100}%`;
+}
+
+function calculate() {
+  const scores = Object.fromEntries(dimensions.map(d=>[d.key,0]));
+  answers.forEach((answer,i) => {
+    if(answer===null) return;
+    const weights = questions[i].a[answer][1];
+    Object.entries(weights).forEach(([key,value]) => scores[key]+=value);
+  });
+  const total = Object.values(scores).reduce((a,b)=>a+b,0);
+  const percentages = {};
+  dimensions.forEach(d=>{
+    percentages[d.key] = total ? Math.round(scores[d.key]/total*100) : 0;
+  });
+  return {scores,percentages,total};
+}
+
+function getProfile(data) {
+  const max = Math.max(...dimensions.map(d=>data.scores[d.key]));
+  const leaders = dimensions.filter(d=>data.scores[d.key]===max);
+  if(leaders.length===4) {
+    return {name:"بازیکن چندسبکی",icon:"🎮",
+      description:"سلیقه تو بین هر چهار سبک پخش شده است؛ از تجربه‌های متنوع لذت می‌بری.",
+      tie:"هر چهار سبک امتیاز یکسان دارند."};
+  }
+  if(leaders.length>1) {
+    return {name:leaders.map(d=>d.name).join(" + "),icon:"✨",
+      description:`تو ترکیبی از سبک‌های ${leaders.map(d=>d.name).join(" و ")} را ترجیح می‌دهی.`,
+      tie:"چند سبک امتیاز برابر و بالاتر دارند؛ هیچ‌کدام به‌تنهایی برنده نیست."};
+  }
+  const leader=leaders[0];
+  const second=[...dimensions].filter(d=>d.key!==leader.key)
+    .sort((a,b)=>data.scores[b.key]-data.scores[a.key])[0];
+  const names={
+    competition:"رقابت‌جوی",
+    teamwork:"همراه",
+    collecting:"کلکسیون‌ساز",
+    exploration:"کاوشگر"
+  };
+  let title=names[leader.key];
+  if(second && data.scores[second.key]>=data.scores[leader.key]*.65) {
+    const combined={
+      "competition-teamwork":"رقابت‌جوی تیمی",
+      "teamwork-competition":"رقابت‌جوی تیمی",
+      "exploration-collecting":"کاوشگر گنج‌ها",
+      "collecting-exploration":"کاوشگر گنج‌ها",
+      "teamwork-exploration":"ماجراجوی گروهی",
+      "exploration-teamwork":"ماجراجوی گروهی",
+      "competition-collecting":"شکارچی رکورد و پاداش",
+      "collecting-competition":"شکارچی رکورد و پاداش",
+      "teamwork-collecting":"همراهِ گنج‌یاب",
+      "collecting-teamwork":"همراهِ گنج‌یاب",
+      "competition-exploration":"رقابت‌جوی ماجراجو",
+      "exploration-competition":"رقابت‌جوی ماجراجو"
+    };
+    title=combined[leader.key+"-"+second.key] || title;
+  }
+  return {name:title,icon:leader.icon,description:leader.description,tie:""};
+}
+
+function renderResult() {
+  const data=calculate();
+  const profile=getProfile(data);
+  latest={...data,profile};
+  $("resultIcon").textContent=profile.icon;
+  $("resultName").textContent=profile.name;
+  $("resultDescription").textContent=profile.description;
+  $("tieMessage").textContent=profile.tie;
+  $("resultTip").textContent=dimensions
+    .filter(d=>data.scores[d.key]===Math.max(...dimensions.map(x=>data.scores[x.key])))
+    .map(d=>d.tip).join(" ");
+
+  $("scoreGrid").replaceChildren();
+  dimensions.forEach(d=>{
+    const item=document.createElement("div");
+    item.className="score-item";
+    const top=document.createElement("div");
+    top.className="score-title";
+    const name=document.createElement("strong");
+    name.textContent=`${d.icon} ${d.name}`;
+    const percent=document.createElement("strong");
+    percent.textContent=`${persianNumber(data.percentages[d.key])}٪`;
+    top.append(name,percent);
+    const track=document.createElement("div");
+    track.className="score-track";
+    track.setAttribute("role","img");
+    track.setAttribute("aria-label",`${d.name}: ${data.percentages[d.key]} درصد`);
+    const fill=document.createElement("div");
+    fill.className="score-fill "+d.key;
+    fill.style.width=data.percentages[d.key]+"%";
+    track.append(fill);
+    const small=document.createElement("div");
+    small.className="chart-label";
+    small.textContent=`امتیاز: ${persianNumber(data.scores[d.key])}`;
+    item.append(top,track,small);
+    $("scoreGrid").append(item);
+  });
+  $("saveStatus").textContent="";
+  show("result");
+}
+
+function saveResult(slot) {
+  if(!latest) return;
+  const copy=JSON.parse(JSON.stringify(latest));
+  if(slot==="A") savedA=copy;
+  else savedB=copy;
+  $("saveStatus").textContent=`نتیجه فعلی در جایگاه ${slot} ذخیره شد. برای مقایسه، نتیجه دیگری هم ذخیره کن.`;
+}
+
+function renderCompare() {
+  const out=$("compareOutput");
+  out.replaceChildren();
+  if(!savedA || !savedB) {
+    const p=document.createElement("p");
+    p.className="muted";
+    p.textContent="برای مقایسه، ابتدا دو نتیجه ذخیره کن. می‌توانی آزمون را دوباره انجام بدهی و نتیجه دوم را در جایگاه دیگر ذخیره کنی.";
+    out.append(p);
+    show("compare");
+    return;
+  }
+  const names=document.createElement("div");
+  names.className="compare-row";
+  [["A",savedA],["B",savedB]].forEach(([label,data])=>{
+    const box=document.createElement("div");
+    box.className="compare-box";
+    const h=document.createElement("h3");
+    h.textContent=`نتیجه ${label}`;
+    const n=document.createElement("strong");
+    n.textContent=data.profile.name;
+    const desc=document.createElement("p");
+    desc.className="note";
+    desc.textContent=data.profile.description;
+    box.append(h,n,desc);
+    names.append(box);
+  });
+  out.append(names);
+
+  dimensions.forEach(d=>{
+    const row=document.createElement("div");
+    row.className="score-item";
+    const title=document.createElement("strong");
+    title.textContent=`${d.icon} ${d.name}`;
+    const values=document.createElement("div");
+    values.className="compare-row";
+    [["A",savedA],["B",savedB]].forEach(([label,data])=>{
+      const p=document.createElement("div");
+      p.textContent=`${label}: ${persianNumber(data.percentages[d.key])}٪`;
+      values.append(p);
+    });
+    row.append(title,values);
+    out.append(row);
+  });
+  const summary=document.createElement("p");
+  summary.className="muted";
+  const aTop=Math.max(...dimensions.map(d=>savedA.scores[d.key]));
+  const bTop=Math.max(...dimensions.map(d=>savedB.scores[d.key]));
+  const aLeaders=dimensions.filter(d=>savedA.scores[d.key]===aTop).map(d=>d.name).join("، ");
+  const bLeaders=dimensions.filter(d=>savedB.scores[d.key]===bTop).map(d=>d.name).join("، ");
+  summary.textContent=`سبک برتر A: ${aLeaders}. سبک برتر B: ${bLeaders}. این مقایسه فقط امتیازهای دو بار آزمون را نشان می‌دهد.`;
+  out.append(summary);
+  show("compare");
+}
+
+function downloadSVG() {
+  if(!latest) return;
+  const data=latest;
+  const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const W=760,H=540;
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <rect width="100%" height="100%" rx="24" fill="#101225"/>
+  <text x="380" y="55" text-anchor="middle" fill="#67e8f9" font-size="28" font-family="Tahoma,Arial,sans-serif">آزمون سبک بازی من</text>
+  <text x="380" y="105" text-anchor="middle" fill="#f5f5ff" font-size="30" font-family="Tahoma,Arial,sans-serif">${esc(data.profile.name)}</text>
+  <text x="380" y="140" text-anchor="middle" fill="#b4bad4" font-size="16" font-family="Tahoma,Arial,sans-serif">${esc(data.profile.description)}</text>`;
+  dimensions.forEach((d,i)=>{
+    const y=205+i*72;
+    const width=450*data.percentages[d.key]/100;
+    svg+=`<text x="690" y="${y}" text-anchor="end" fill="#f5f5ff" font-size="19" font-family="Tahoma,Arial,sans-serif">${esc(d.name)}</text>
+    <rect x="110" y="${y+12}" width="450" height="17" rx="8" fill="#30334f"/>
+    <rect x="${560-width}" y="${y+12}" width="${width}" height="17" rx="8" fill="${d.color}"/>
+    <text x="85" y="${y+27}" text-anchor="middle" fill="#f5f5ff" font-size="17" font-family="Tahoma,Arial,sans-serif">${data.percentages[d.key]}٪</text>`;
+  });
+  svg+=`<text x="380" y="505" text-anchor="middle" fill="#b4bad4" font-size="13" font-family="Tahoma,Arial,sans-serif">این آزمون سرگرمی است و سنجش علمی شخصیت نیست.</text></svg>`;
+  const blob=new Blob([svg],{type:"image/svg+xml;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="natije-style-bazi.svg";
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+$("startBtn").addEventListener("click",()=>{
+  current=0;
+  answers=Array(questions.length).fill(null);
+  renderQuestion();
+  show("quiz");
+});
+$("prevBtn").addEventListener("click",()=>{
+  if(current>0){current--;renderQuestion();}
+});
+$("nextBtn").addEventListener("click",()=>{
+  if(answers[current]===null)return;
+  if(current<questions.length-1){current++;renderQuestion();}
+  else if(answers.every(a=>a!==null)){renderResult();}
+});
+$("restartBtn").addEventListener("click",()=>{
+  answers=Array(questions.length).fill(null);
+  current=0;
+  latest=null;
+  renderQuestion();
+  show("intro");
+});
+$("saveABtn").addEventListener("click",()=>saveResult("A"));
+$("saveBBtn").addEventListener("click",()=>saveResult("B"));
+$("compareBtn").addEventListener("click",renderCompare);
+$("backResultBtn").addEventListener("click",()=>show("result"));
+$("printBtn").addEventListener("click",()=>window.print());
+$("imageBtn").addEventListener("click",downloadSVG);
+</script>
+</body>
+</html>
